@@ -4,6 +4,18 @@ export default defineNuxtConfig({
   tailwindcss: {
     config: {
       theme: {
+        extend: {
+          dropShadow: {
+            'green': [
+              '3px 2px 0 white',
+              '3px 2px 0 rgba(22, 163, 74)',
+              
+            ],
+          }
+        },
+        fontFamily: {
+          "sans-serif": "'Noto Sans HK'"
+        }
       }
     }
   },
@@ -19,13 +31,13 @@ export default defineNuxtConfig({
       link: [
         { rel: "icon", href: "/loading.gif", type: "image/gif" },
         { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.css' },
-        { rel: "preconnect", href: "https://fonts.googleapis.com" },
-        { rel: "preconnect", href: "https://fonts.gstatic.com", crossorigin: "" },
-        { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Fraunces:wght@100..900&display=swap" },
+        { rel: "preconnect", href: "https://fonts.bunny.net" },
+        { rel: "stylesheet", href: "https://fonts.bunny.net/css?family=lxgw-wenkai-tc:400,700" },
+        { rel: "stylesheet", href: "https://fonts.bunny.net/css?family=noto-sans-hk:400,700" },
+        { rel: "stylesheet", href: "https://fonts.bunny.net/css?family=abril-fatface:400" },
       ],
       style: [
-        { children: "@font-face { font-family: 'KuiBenZhenShu'; src: url(/fonts/AaKuiBenZhenShu-2.ttf) }" },
-        { children: "body { font-family: 'Fraunces', 'KuiBenZhenShu', 'Microsoft JhengHei' }" }
+        { children: "body { font-family: 'Abril Fatface', 'LXGW WenKai TC', 'Microsoft JhengHei' }" }
       ]
     }
   },
