@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import Favicon from "./components/Favicon.vue"
+
 import { Lunar, LunarMonth, SolarMonth } from "lunar-typescript"
+
 const now = new Date(2025, 0, 6)
 const year = now.getFullYear()
 const month = now.getMonth() + 1
@@ -21,17 +24,18 @@ const lunarMonthDayCount = LunarMonth.fromYm(lunarYear, lunarMonth)?.getDayCount
 </script>
 
 <template>
-  <main class="grid grid-rows-[auto_auto_1fr] gap-2 py-2 text-2xl text-green-600">
-    <div class="relative border-2 border-green-600 text-center grid grid-cols-3 *:leading-tight">
+  <Favicon :date="date" />
+  <main class="gap-2 py-2 text-2xl text-green">
+    <div class="relative border-2 border-green text-center grid grid-cols-3 *:leading-tight">
       <div>{{ monthInEnglish }}</div>
       <div></div>
       <div class="font-bold font-sans-serif">{{ monthInChinese }}{{ monthType }}</div>
       <div
-        class="absolute border-2 border-green-600 rounded left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white min-w-16 min-h-[36px]">
+        class="absolute border-2 border-green rounded left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white min-w-16 min-h-[36px]">
         <div
-          class="absolute inline border-2 border-green-600 rounded h-6 w-20 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white leading-[0.675] text-[1.725rem] overflow-visible -z-20">
+          class="absolute inline border-2 border-green rounded h-6 w-20 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white leading-[0.675] text-[1.725rem] overflow-visible -z-20">
           <div
-            class="absolute bg-white w-[60px] h-[30px] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-center -z-10">
+            class="bg-white absolute w-[60px] h-[30px] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-center -z-10">
           </div>
           <span>{{ year }}</span>
         </div>

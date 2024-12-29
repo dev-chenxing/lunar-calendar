@@ -1,15 +1,21 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
+  alias: {
+    "~": ".",
+  },
   tailwindcss: {
     config: {
       theme: {
+        colors: {
+          green: "#267F00",
+          white: "white"
+        },
         extend: {
           dropShadow: {
             'green': [
               '3px 2px 0 white',
-              '3px 2px 0 rgba(22, 163, 74)',
-              
+              '3px 2px 0 #267F00',
             ],
           }
         },
@@ -27,9 +33,8 @@ export default defineNuxtConfig({
         { name: "description", content: "经典老黄历日历" }
       ],
       title: "通胜日历",
-      script: [],
       link: [
-        { rel: "icon", href: "/loading.gif", type: "image/gif" },
+        { rel: "icon", href: "favicon.png", type: "image/png" },
         { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.css' },
         { rel: "preconnect", href: "https://fonts.bunny.net" },
         { rel: "stylesheet", href: "https://fonts.bunny.net/css?family=lxgw-wenkai-tc:400,700" },
