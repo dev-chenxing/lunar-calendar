@@ -3,6 +3,9 @@ import Favicon from "./components/Favicon.vue"
 
 import { Lunar, LunarMonth, SolarMonth } from "lunar-typescript"
 
+const CHINESE_NUMBERS = ["零", "一", "二", "三", "四", "五", "六", "七", "八", "九"]
+const color = "#267F00"
+
 const now = new Date(2025, 0, 6)
 const year = now.getFullYear()
 const month = now.getMonth() + 1
@@ -11,7 +14,8 @@ const monthInChinese = now.toLocaleString('zh', { month: 'long' })
 const monthDayCount = SolarMonth.fromDate(now).getDays().length
 const monthType = month == 2 ? "平" : (monthDayCount == 31 ? "大" : "小")
 const date = now.getDate()
-const weekday = now.toLocaleString('zh', { weekday: 'long' })
+const weekday = now.toLocaleString('en', { weekday: 'long' })
+const weekdayInChinese = now.toLocaleString('zh', { weekday: 'long' })
 
 const lunarDate = Lunar.fromDate(now)
 const lunarYear = lunarDate.getYear()
@@ -21,11 +25,13 @@ const lunarDay = `${lunarDate.getDayInChinese()}日`
 const lunarJieQi = lunarDate.getJieQi()
 const lunarNextJieQi = lunarDate.getNextJieQi()
 const lunarMonthDayCount = LunarMonth.fromYm(lunarYear, lunarMonth)?.getDayCount()
+const lunarMonthType = lunarMonthDayCount == 30 ? "大" : "小"
+const lunarShuJiu = lunarDate.getShuJiu()
 </script>
 
 <template>
-  <Favicon :date="date" />
-  <main class="gap-2 py-2 text-2xl text-green">
+  <Favicon :date="date" :color="color" />
+  <main class="gap-2 py-2 text-2xl text-green" ref="main">
     <div class="relative border-2 border-green text-center grid grid-cols-3 *:leading-tight">
       <div>{{ monthInEnglish }}</div>
       <div></div>
@@ -47,9 +53,22 @@ const lunarMonthDayCount = LunarMonth.fromYm(lunarYear, lunarMonth)?.getDayCount
       <div class="[writing-mode:vertical-lr]">山河以秋</div>
     </div>
     <div class="grid grid-cols-3 *:text-center">
-      <div class="font-sans-serif font-bold">{{ lunarDay }}</div>
-      <div>{{ lunarJieQi || lunarNextJieQi.getSolar().getLunar().getDayInChinese() + lunarNextJieQi.getName() }}</div>
-      <div class="font-sans-serif font-bold">{{ weekday }}</div>
+      <div>
+        <p class="text-sm">{{ lunarDate.getYearInGanZhi() }}年{{ lunarDate.getMonthInChinese() }}月{{ lunarMonthType }}
+        </p>
+        <p class="font-sans-serif font-bold text-3xl">{{ lunarDay }}</p>
+      </div>
+      <div class="text-lg">
+        <p v-if="lunarShuJiu">
+          {{ lunarShuJiu.getName() }}第{{ CHINESE_NUMBERS[lunarShuJiu.getIndex()] }}天
+        </p>
+        <p>{{ lunarJieQi || lunarNextJieQi.getSolar().getLunar().getDayInChinese() +
+          lunarNextJieQi.getName() }}</p>
+      </div>
+      <div>
+        <p class="text-sm">{{ weekday }}</p>
+        <p class="font-sans-serif font-bold text-3xl">{{ weekdayInChinese }}</p>
+      </div>
     </div>
   </main>
 </template>

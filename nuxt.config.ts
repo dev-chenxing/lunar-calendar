@@ -9,7 +9,8 @@ export default defineNuxtConfig({
       theme: {
         colors: {
           green: "#267F00",
-          white: "white"
+          white: "white",
+          black: "black"
         },
         extend: {
           dropShadow: {
