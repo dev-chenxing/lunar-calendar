@@ -9,8 +9,7 @@ export default defineNuxtConfig({
       theme: {
         colors: {
           green: "#267F00",
-          white: "white",
-          black: "black"
+          white: "white"
         },
         extend: {
           dropShadow: {
@@ -40,10 +39,11 @@ export default defineNuxtConfig({
         { rel: "preconnect", href: "https://fonts.bunny.net" },
         { rel: "stylesheet", href: "https://fonts.bunny.net/css?family=lxgw-wenkai-tc:400,700" },
         { rel: "stylesheet", href: "https://fonts.bunny.net/css?family=noto-sans-hk:400,700" },
+        { rel: "stylesheet", href: "https://fonts.bunny.net/css?family=noto-sans-sc:400|noto-serif-sc:400" },
         { rel: "stylesheet", href: "https://fonts.bunny.net/css?family=abril-fatface:400" },
       ],
       style: [
-        { children: "body { font-family: 'Abril Fatface', 'LXGW WenKai TC', 'Microsoft JhengHei' }" }
+        { children: "body { font-family: 'Abril Fatface', 'LXGW WenKai TC', 'Noto Serif SC', 'Microsoft JhengHei' }" }
       ]
     }
   },
