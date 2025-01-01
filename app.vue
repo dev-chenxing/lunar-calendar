@@ -15,18 +15,19 @@ const twoWordYiJiMap: Record<string, string> = {
 	"平治道涂": "平治 道涂"
 }
 
-const now = new Date(2022, 0, 29)
+const now = new Date()
 const year = now.getFullYear()
 const month = now.getMonth() + 1
-const monthInEnglish = now.toLocaleString('en', { month: 'long' }).toUpperCase()
-const monthInChinese = now.toLocaleString('zh', { month: 'long' })
-const monthDayCount = SolarMonth.fromDate(now).getDays().length
-const monthType = month == 2 ? "平" : (monthDayCount == 31 ? "大" : "小")
 const date = now.getDate()
-const weekday = now.toLocaleString('en', { weekday: 'long' })
-const weekdayInChinese = now.toLocaleString('zh', { weekday: 'long' })
+const today = new Date(year, month - 1, date)
+const monthInEnglish = today.toLocaleString('en', { month: 'long' }).toUpperCase()
+const monthInChinese = today.toLocaleString('zh', { month: 'long' })
+const monthDayCount = SolarMonth.fromDate(today).getDays().length
+const monthType = month == 2 ? "平" : (monthDayCount == 31 ? "大" : "小")
+const weekday = today.toLocaleString('en', { weekday: 'long' })
+const weekdayInChinese = today.toLocaleString('zh', { weekday: 'long' })
 
-const lunarDate = Lunar.fromDate(now)
+const lunarDate = Lunar.fromDate(today)
 const lunarYear = lunarDate.getYear()
 const lunarMonth = lunarDate.getMonth()
 const lunarDay = `${lunarDate.getDayInChinese()}日`
@@ -39,8 +40,6 @@ const lunarShuJiu = lunarDate.getShuJiu()
 function isCommonYiJi(yiji: string) {
 	if (commonYiJisPriorty[yiji])
 		return true
-	else
-		console.log(yiji)
 }
 
 const lunarYi: Ref<HTMLParagraphElement | undefined> = ref()
@@ -79,7 +78,8 @@ onMounted(() => {
 			<div class="[writing-mode:vertical-rl] mr-auto text-sm hidden md:flex">
 				<ChinesePoetry />
 			</div>
-			<div class="flex font-bold text-[16rem] md:text-[18rem] leading-none drop-shadow-green text-center">{{ date }}</div>
+			<div class="flex font-bold text-[16rem] md:text-[18rem] leading-none drop-shadow-green text-center">{{ date
+				}}</div>
 			<div class="[writing-mode:vertical-lr] ml-auto hidden md:flex"></div>
 		</div>
 		<div class="grid grid-cols-3 *:text-center">
@@ -104,7 +104,7 @@ onMounted(() => {
 
 		<div class="border-x-2 border-b-2 border-green p-1 text-base">
 			<div class="flex justify-between">
-				<div class="pr-2 border-r border-green">
+				<div class="pr-2 border-r border-green flex items-center">
 					<span
 						class="inline-block bg-green text-white rounded-full h-8 w-8 text-center m-1 text-xl font-sans-serif">宜</span>
 					<span ref="lunarYi">{{
@@ -116,12 +116,20 @@ onMounted(() => {
 							.join(" ")) }}
 					</span>
 				</div>
-				<div class="mr-auto">
+				<div class="flex text-center">
 					<div
-						class="font-bold font-sans-serif border-r border-green border-dashed w-10 text-center leading-tight">
-						時辰吉凶</div>
+						class="font-bold text-lg font-sans-serif border-r border-green border-dashed w-11 leading-tight inline-block my-auto">
+						時辰吉凶
+					</div>
+					<div class="flex">
+						<div class="inline ml-0.5" v-for="time in lunarDate.getTimes()">
+							<p class="font-bold leading-snug">{{ time.getZhi() }}</p>
+							<p class="font-sans-serif text-[0.5rem] leading-none">{{ time.getMinHm() }}</p>
+							<p class="font-bold leading-tight">{{ time.getTianShenLuck() }}</p>
+						</div>
+					</div>
 				</div>
-				<div class="px-1 border-l border-green">
+				<div class="px-1 border-l border-green flex items-center">
 					<span
 						class="inline-block bg-green text-white rounded-full h-8 w-8 text-center m-1 text-xl font-sans-serif">忌</span>
 					<span ref="lunarJi">{{ tify(lunarDate.getDayJi()
