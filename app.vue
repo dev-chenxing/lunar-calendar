@@ -37,6 +37,9 @@ const lunarMonthDayCount = LunarMonth.fromYm(lunarYear, lunarMonth)?.getDayCount
 const lunarMonthType = lunarMonthDayCount == 30 ? "大" : "小"
 const lunarShuJiu = lunarDate.getShuJiu()
 const lunarPositionTai = lunarDate.getDayPositionTai().split(" ")
+const lunarDayLu = lunarDate.getDayLu().split(" ")
+const lunarEightChar = lunarDate.getEightChar().toString().split(" ")
+
 
 function isCommonYiJi(yiji: string) {
 	if (commonYiJisPriorty[yiji])
@@ -85,10 +88,10 @@ onMounted(() => {
 		</div>
 		<div class="grid grid-cols-3 *:text-center border-2 rounded-t-3xl mb-1">
 			<div class="border-r-2">
-				<p class="text-sm">{{ lunarDate.getYearInGanZhi() }}年{{ lunarDate.getMonthInChinese() }}月{{
+				<p class="text-sm h-[20px]">{{ lunarDate.getYearInGanZhi() }}年{{ lunarDate.getMonthInChinese() }}月{{
 					lunarMonthType }}
 				</p>
-				<p class="font-sans-serif font-bold text-3xl">{{ lunarDay }}</p>
+				<p class="font-sans-serif font-bold text-3xl pb-1">{{ lunarDay }}</p>
 			</div>
 			<div class="text-lg">
 				<p v-if="lunarShuJiu">
@@ -98,12 +101,12 @@ onMounted(() => {
 					lunarNextJieQi.getName() }}</p>
 			</div>
 			<div class="border-l-2">
-				<p class="text-sm">{{ weekday }}</p>
-				<p class="font-sans-serif font-bold text-3xl">{{ weekdayInChinese }}</p>
+				<p class="text-sm h-[20px]">{{ weekday }}</p>
+				<p class="font-sans-serif font-bold text-3xl pb-1">{{ weekdayInChinese }}</p>
 			</div>
 		</div>
 
-		<div class="border-x-2 border-b-2 p-1 text-base">
+		<div class="border-x-2 border-b-2 text-base">
 			<div class="flex justify-between border-b">
 				<div class="pr-2 border-r flex items-center">
 					<span
@@ -141,14 +144,59 @@ onMounted(() => {
 						.join(" ")) }}</span>
 				</div>
 			</div>
-			<div class="">
-				<div class="mt-1 pr-1 *:[writing-mode:vertical-rl] border-r w-fit">
+			<div class="flex">
+				<div class="w-24 flex items-center justify-center pr-1 *:[writing-mode:vertical-rl] border-r">
 					<span
 						class="bg-green text-white text-sm rounded-xl m-1 py-[.25rem] font-sans-serif w-[1.35rem] leading-tight tracking-[.1em]">
 						今日胎神
 					</span>
-					<span v-for="positionTai in lunarPositionTai" class="text-xl tracking-widest">{{ positionTai
-						}}</span>
+					<span v-for="positionTai in lunarPositionTai" class="text-xl tracking-widest w-fit">
+						{{ positionTai }}
+					</span>
+				</div>
+				<div class="flex flex-col w-14 mx-1 pr-1 border-r">
+					<span class="bg-green text-white text-xs rounded-xl m-1 text-center font-sans-serif tracking-wide">
+						是日
+					</span>
+					<div class="flex justify-center pb-1">
+						<span v-for="dayLu in lunarDayLu"
+							class="w-fit text-sm tracking-none [writing-mode:vertical-rl]">
+							{{ tify(dayLu) }}
+						</span>
+					</div>
+				</div>
+				<div class="flex flex-col w-17 mx-1 pr-1 border-r text-sm leading-[1.1]">
+					<div>
+						<span class="underline w-10 inline-block text-center">天干</span>
+						<span class="font-bold font-sans-serif mx-1">{{ lunarDate.getDayGan() }}</span>
+					</div>
+					<div>
+						<span class="underline w-10 inline-block text-center">地支</span>
+						<span class="font-bold font-sans-serif mx-1">{{ lunarDate.getDayZhi() }}</span>
+					</div>
+					<div>
+						<span class="underline w-10 inline-block text-center">納音</span>
+						<span class="font-bold font-sans-serif mx-1">{{ lunarDate.getDayNaYin()[2] }}</span>
+					</div>
+					<div>
+						<span class="underline tracking-[-.15em] w-10 inline-block">廿八宿</span>
+						<span class="font-bold font-sans-serif mx-1">{{ lunarDate.getXiu() }}</span>
+					</div>
+					<div>
+						<span class="underline tracking-[-.15em] w-10 inline-block">十二神</span>
+						<span class="font-bold font-sans-serif mx-1">{{ lunarDate.getZhiXing() }}</span>
+					</div>
+				</div>
+				<div class="w-20 flex items-center justify-center pr-1 border-r">
+					<span
+						class="bg-green text-white text-sm rounded-xl mr-2 py-[.25rem] font-sans-serif w-[1.35rem] leading-tight tracking-[.1em] [writing-mode:vertical-rl]">
+						今日八字
+					</span>
+					<div>
+						<p v-for="eightChar in lunarEightChar" class="w-fit flex leading-tight tracking-widest">
+							{{ eightChar }}
+						</p>
+					</div>
 				</div>
 			</div>
 		</div>
