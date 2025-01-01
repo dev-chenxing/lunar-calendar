@@ -15,7 +15,7 @@ const twoWordYiJiMap: Record<string, string> = {
 	"平治道涂": "平治 道涂"
 }
 
-const now = new Date()
+const now = new Date(2025, 0, 6)
 const year = now.getFullYear()
 const month = now.getMonth() + 1
 const date = now.getDate()
@@ -36,6 +36,7 @@ const lunarNextJieQi = lunarDate.getNextJieQi()
 const lunarMonthDayCount = LunarMonth.fromYm(lunarYear, lunarMonth)?.getDayCount()
 const lunarMonthType = lunarMonthDayCount == 30 ? "大" : "小"
 const lunarShuJiu = lunarDate.getShuJiu()
+const lunarPositionTai = lunarDate.getDayPositionTai().split(" ")
 
 function isCommonYiJi(yiji: string) {
 	if (commonYiJisPriorty[yiji])
@@ -59,14 +60,14 @@ onMounted(() => {
 <template>
 	<Favicon :date="date" :color="color" />
 	<main class="gap-2 py-2 text-2xl text-green" ref="main">
-		<div class="relative border-2 border-green text-center grid grid-cols-3 *:leading-tight">
+		<div class="relative border-2 text-center grid grid-cols-3 *:leading-tight">
 			<div>{{ monthInEnglish }}</div>
 			<div></div>
 			<div class="font-bold font-sans-serif">{{ monthInChinese }}{{ monthType }}</div>
 			<div
-				class="absolute border-2 border-green rounded left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white min-w-16 min-h-[36px]">
+				class="absolute border-2 rounded left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white min-w-16 min-h-[36px]">
 				<div
-					class="absolute inline border-2 border-green rounded h-6 w-20 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white leading-[0.675] text-[1.725rem] overflow-visible -z-20">
+					class="absolute inline border-2 rounded h-6 w-20 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white leading-[0.675] text-[1.725rem] overflow-visible -z-20">
 					<div
 						class="bg-white absolute w-[60px] h-[30px] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-center -z-10">
 					</div>
@@ -82,8 +83,8 @@ onMounted(() => {
 				}}</div>
 			<div class="[writing-mode:vertical-lr] ml-auto hidden md:flex"></div>
 		</div>
-		<div class="grid grid-cols-3 *:text-center">
-			<div>
+		<div class="grid grid-cols-3 *:text-center border-2 rounded-t-3xl mb-1">
+			<div class="border-r-2">
 				<p class="text-sm">{{ lunarDate.getYearInGanZhi() }}年{{ lunarDate.getMonthInChinese() }}月{{
 					lunarMonthType }}
 				</p>
@@ -96,15 +97,15 @@ onMounted(() => {
 				<p>{{ lunarJieQi || lunarNextJieQi.getSolar().getLunar().getDayInChinese() +
 					lunarNextJieQi.getName() }}</p>
 			</div>
-			<div>
+			<div class="border-l-2">
 				<p class="text-sm">{{ weekday }}</p>
 				<p class="font-sans-serif font-bold text-3xl">{{ weekdayInChinese }}</p>
 			</div>
 		</div>
 
-		<div class="border-x-2 border-b-2 border-green p-1 text-base">
-			<div class="flex justify-between">
-				<div class="pr-2 border-r border-green flex items-center">
+		<div class="border-x-2 border-b-2 p-1 text-base">
+			<div class="flex justify-between border-b">
+				<div class="pr-2 border-r flex items-center">
 					<span
 						class="inline-block bg-green text-white rounded-full h-8 w-8 text-center m-1 text-xl font-sans-serif">宜</span>
 					<span ref="lunarYi">{{
@@ -118,7 +119,7 @@ onMounted(() => {
 				</div>
 				<div class="flex text-center">
 					<div
-						class="font-bold text-lg font-sans-serif border-r border-green border-dashed w-11 leading-tight inline-block my-auto">
+						class="font-bold text-lg font-sans-serif border-r border-dashed w-11 leading-tight inline-block my-auto">
 						時辰吉凶
 					</div>
 					<div class="flex">
@@ -129,7 +130,7 @@ onMounted(() => {
 						</div>
 					</div>
 				</div>
-				<div class="px-1 border-l border-green flex items-center">
+				<div class="px-1 border-l flex items-center">
 					<span
 						class="inline-block bg-green text-white rounded-full h-8 w-8 text-center m-1 text-xl font-sans-serif">忌</span>
 					<span ref="lunarJi">{{ tify(lunarDate.getDayJi()
@@ -138,6 +139,16 @@ onMounted(() => {
 						.sort((a, b) => (commonYiJisPriorty[b] - commonYiJisPriorty[a]))
 						.slice(0, 4)
 						.join(" ")) }}</span>
+				</div>
+			</div>
+			<div class="">
+				<div class="mt-1 pr-1 *:[writing-mode:vertical-rl] border-r w-fit">
+					<span
+						class="bg-green text-white text-sm rounded-xl m-1 py-[.25rem] font-sans-serif w-[1.35rem] leading-tight tracking-[.1em]">
+						今日胎神
+					</span>
+					<span v-for="positionTai in lunarPositionTai" class="text-xl tracking-widest">{{ positionTai
+						}}</span>
 				</div>
 			</div>
 		</div>
