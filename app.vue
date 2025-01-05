@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Favicon from "./components/Favicon.vue"
 
-import { Lunar, LunarMonth, SolarMonth } from "lunar-typescript"
+import { Lunar, LunarMonth, Solar, SolarMonth } from "lunar-typescript"
 import { tify } from 'chinese-conv'
 
 const color = "#267F00"
@@ -14,11 +14,16 @@ const twoWordYiJiMap: Record<string, string> = {
 	"修饰垣墙": "修饰 垣墙",
 	"平治道涂": "平治 道涂"
 }
+const SHENG_XIAO_SAN_HE = ["鼠龙猴", "牛蛇鸡", "虎马狗", "兔猪羊"]
 
-const now = new Date(2025, 0, 6)
+
+
+const now = new Date(2025, 0, 5)
 const year = now.getFullYear()
 const month = now.getMonth() + 1
 const date = now.getDate()
+
+const numOfDay = Solar.fromDate(now).subtract(Solar.fromYmd(year, 1, 1))
 const today = new Date(year, month - 1, date)
 const monthInEnglish = today.toLocaleString('en', { month: 'long' }).toUpperCase()
 const monthInChinese = today.toLocaleString('zh', { month: 'long' })
@@ -39,6 +44,12 @@ const lunarShuJiu = lunarDate.getShuJiu()
 const lunarPositionTai = lunarDate.getDayPositionTai().split(" ")
 const lunarDayLu = lunarDate.getDayLu().split(" ")
 const lunarEightChar = lunarDate.getEightChar().toString().split(" ")
+const lunarDayShengXiao = lunarDate.getDayShengXiao()
+
+const shengXiaoAge: Record<string, number> = {}
+for (let i of Array(12).keys()) {
+	shengXiaoAge[Lunar.fromYmd(lunarYear - 24 - i, 1, 1).getYearShengXiao()] = 24 + i + 1
+}
 
 
 function isCommonYiJi(yiji: string) {
@@ -78,13 +89,17 @@ onMounted(() => {
 				</div>
 			</div>
 		</div>
-		<div class="md:grid grid-cols-3 p-1 *:items-center *:justify-center md:h-[19rem]">
-			<div class="[writing-mode:vertical-rl] mr-auto text-sm hidden md:flex">
-				<ChinesePoetry />
+		<div class="grid grid-cols-3 p-1 *:items-center *:justify-center h-[14.5rem] md:h-[19rem]">
+			<div class="[writing-mode:vertical-rl] mr-auto text-sm">
+				<ChinesePoetry :day="numOfDay" line="2" />
 			</div>
-			<div class="flex font-bold text-[16rem] md:text-[18rem] leading-none drop-shadow-green text-center">{{ date
+			<div
+				class="flex font-bold text-[15rem] md:text-[18rem] h-56 md:h-auto leading-none drop-shadow-green text-center">
+				{{ date
 				}}</div>
-			<div class="[writing-mode:vertical-lr] ml-auto hidden md:flex"></div>
+			<div class="[writing-mode:vertical-lr] ml-auto text-sm">
+				<ChinesePoetry :day="numOfDay" line="1" />
+			</div>
 		</div>
 		<div class="grid grid-cols-3 *:text-center border-2 rounded-t-3xl mb-1">
 			<div class="border-r-2">
@@ -106,98 +121,125 @@ onMounted(() => {
 			</div>
 		</div>
 
-		<div class="border-x-2 border-b-2 text-base">
-			<div class="flex justify-between border-b">
-				<div class="pr-2 border-r flex items-center">
-					<span
-						class="inline-block bg-green text-white rounded-full h-8 w-8 text-center m-1 text-xl font-sans-serif">宜</span>
-					<span ref="lunarYi">{{
-						tify(lunarDate.getDayYi()
-							.filter(isCommonYiJi)
-							.map((yiji) => twoWordYiJiMap[yiji] ? twoWordYiJiMap[yiji] : yiji)
-							.sort((a, b) => (commonYiJisPriorty[b] - commonYiJisPriorty[a]))
-							.slice(0, 4)
-							.join(" ")) }}
-					</span>
-				</div>
-				<div class="flex text-center">
-					<div
-						class="font-bold text-lg font-sans-serif border-r border-dashed w-11 leading-tight inline-block my-auto">
-						時辰吉凶
-					</div>
-					<div class="flex">
-						<div class="inline ml-0.5" v-for="time in lunarDate.getTimes()">
-							<p class="font-bold leading-snug">{{ time.getZhi() }}</p>
-							<p class="font-sans-serif text-[0.5rem] leading-none">{{ time.getMinHm() }}</p>
-							<p class="font-bold leading-tight">{{ time.getTianShenLuck() }}</p>
-						</div>
-					</div>
-				</div>
-				<div class="px-1 border-l flex items-center">
-					<span
-						class="inline-block bg-green text-white rounded-full h-8 w-8 text-center m-1 text-xl font-sans-serif">忌</span>
-					<span ref="lunarJi">{{ tify(lunarDate.getDayJi()
+		<div class="flex flex-wrap border-x-2 border-b-2 text-base *:border-x *:border-b">
+			<div class="flex flex-auto items-center justify-center min-w-48">
+				<span
+					class="inline-block bg-green text-white rounded-full h-8 w-8 text-center m-1 text-xl font-sans-serif">宜</span>
+				<span ref="lunarYi">{{
+					tify(lunarDate.getDayYi()
 						.filter(isCommonYiJi)
 						.map((yiji) => twoWordYiJiMap[yiji] ? twoWordYiJiMap[yiji] : yiji)
 						.sort((a, b) => (commonYiJisPriorty[b] - commonYiJisPriorty[a]))
 						.slice(0, 4)
-						.join(" ")) }}</span>
+						.join(" ")) }}
+				</span>
+			</div>
+			<div class="flex flex-auto text-center items-center justify-center min-w-80">
+				<div
+					class="font-bold md:text-lg font-sans-serif border-r border-dashed w-11 leading-[1.1] md:leading-tight inline-block my-1">
+					時辰吉凶
+				</div>
+				<div class="flex">
+					<div class="inline ml-0.5" v-for="time in lunarDate.getTimes()">
+						<p class="font-bold leading-snug">{{ time.getZhi() }}</p>
+						<p class="font-sans-serif text-[0.475rem] md:text-[0.5rem] leading-none">{{ time.getMinHm() }}
+						</p>
+						<p class="font-bold leading-tight">{{ time.getTianShenLuck() }}</p>
+					</div>
 				</div>
 			</div>
-			<div class="flex">
-				<div class="w-24 flex items-center justify-center pr-1 *:[writing-mode:vertical-rl] border-r">
-					<span
-						class="bg-green text-white text-sm rounded-xl m-1 py-[.25rem] font-sans-serif w-[1.35rem] leading-tight tracking-[.1em]">
-						今日胎神
-					</span>
-					<span v-for="positionTai in lunarPositionTai" class="text-xl tracking-widest w-fit">
-						{{ positionTai }}
+			<div class="flex flex-auto items-center min-w-48 justify-center">
+				<span
+					class="inline-block bg-green text-white rounded-full h-8 w-8 text-center m-1 text-xl font-sans-serif">忌</span>
+				<span ref="lunarJi">{{ tify(lunarDate.getDayJi()
+					.filter(isCommonYiJi)
+					.map((yiji) => twoWordYiJiMap[yiji] ? twoWordYiJiMap[yiji] : yiji)
+					.sort((a, b) => (commonYiJisPriorty[b] - commonYiJisPriorty[a]))
+					.slice(0, 4)
+					.join(" ")) }}</span>
+			</div>
+			<div class="min-w-20 flex flex-auto items-center justify-center *:[writing-mode:vertical-rl]">
+				<span
+					class="bg-green text-white text-sm rounded-xl m-1 py-[.25rem] font-sans-serif w-[1.35rem] leading-tight tracking-[.1em]">
+					今日胎神
+				</span>
+				<span v-for="positionTai in lunarPositionTai" class="text-xl tracking-widest w-fit">
+					{{ tify(positionTai) }}
+				</span>
+			</div>
+			<div class="flex flex-auto flex-col min-w-14">
+				<span class="bg-green text-white text-xs rounded-xl m-1 text-center font-sans-serif tracking-wide">
+					是日
+				</span>
+				<div class="flex justify-center pb-1">
+					<span v-for="dayLu in lunarDayLu" class="w-fit text-sm tracking-none [writing-mode:vertical-rl]">
+						{{ tify(dayLu) }}
 					</span>
 				</div>
-				<div class="flex flex-col w-14 mx-1 pr-1 border-r">
-					<span class="bg-green text-white text-xs rounded-xl m-1 text-center font-sans-serif tracking-wide">
-						是日
+			</div>
+			<div class="flex flex-auto flex-col items-center justify-center text-sm leading-[1.1] w-[4.5rem]">
+				<div>
+					<span class="underline w-10 inline-block text-center">天干</span>
+					<span class="font-bold font-sans-serif ml-1">{{ lunarDate.getDayGan() }}</span>
+				</div>
+				<div>
+					<span class="underline w-10 inline-block text-center">地支</span>
+					<span class="font-bold font-sans-serif ml-1">{{ lunarDate.getDayZhi() }}</span>
+				</div>
+				<div>
+					<span class="underline w-10 inline-block text-center">納音</span>
+					<span class="font-bold font-sans-serif ml-1">{{ lunarDate.getDayNaYin()[2] }}</span>
+				</div>
+				<div>
+					<span class="underline tracking-[-.15em] w-10 inline-block">廿八宿</span>
+					<span class="font-bold font-sans-serif ml-1">{{ lunarDate.getXiu() }}</span>
+				</div>
+				<div>
+					<span class="underline tracking-[-.15em] w-10 inline-block">十二神</span>
+					<span class="font-bold font-sans-serif ml-1">{{ lunarDate.getZhiXing() }}</span>
+				</div>
+			</div>
+			<div class="flex flex-auto items-center justify-center min-w-20">
+				<span
+					class="bg-green text-white text-sm rounded-xl mr-2 py-[.25rem] font-sans-serif w-[1.35rem] leading-tight tracking-[.1em] [writing-mode:vertical-rl]">
+					今日八字
+				</span>
+				<div>
+					<p v-for="eightChar in lunarEightChar" class="w-fit flex leading-tight tracking-widest">
+						{{ eightChar }}
+					</p>
+				</div>
+			</div>
+			<div class="flex flex-auto flex-col min-w-24">
+				<span class="bg-green text-white text-xs rounded-xl m-1 text-center font-sans-serif tracking-wide">
+					吉神方位
+				</span>
+				<div class="flex justify-center pb-1">
+					<span class="w-fit text-sm tracking-none [writing-mode:vertical-rl]">
+						喜神{{ tify(lunarDate.getDayPositionXiDesc()) }}
 					</span>
-					<div class="flex justify-center pb-1">
-						<span v-for="dayLu in lunarDayLu"
-							class="w-fit text-sm tracking-none [writing-mode:vertical-rl]">
-							{{ tify(dayLu) }}
-						</span>
-					</div>
-				</div>
-				<div class="flex flex-col w-17 mx-1 pr-1 border-r text-sm leading-[1.1]">
-					<div>
-						<span class="underline w-10 inline-block text-center">天干</span>
-						<span class="font-bold font-sans-serif mx-1">{{ lunarDate.getDayGan() }}</span>
-					</div>
-					<div>
-						<span class="underline w-10 inline-block text-center">地支</span>
-						<span class="font-bold font-sans-serif mx-1">{{ lunarDate.getDayZhi() }}</span>
-					</div>
-					<div>
-						<span class="underline w-10 inline-block text-center">納音</span>
-						<span class="font-bold font-sans-serif mx-1">{{ lunarDate.getDayNaYin()[2] }}</span>
-					</div>
-					<div>
-						<span class="underline tracking-[-.15em] w-10 inline-block">廿八宿</span>
-						<span class="font-bold font-sans-serif mx-1">{{ lunarDate.getXiu() }}</span>
-					</div>
-					<div>
-						<span class="underline tracking-[-.15em] w-10 inline-block">十二神</span>
-						<span class="font-bold font-sans-serif mx-1">{{ lunarDate.getZhiXing() }}</span>
-					</div>
-				</div>
-				<div class="w-20 flex items-center justify-center pr-1 border-r">
-					<span
-						class="bg-green text-white text-sm rounded-xl mr-2 py-[.25rem] font-sans-serif w-[1.35rem] leading-tight tracking-[.1em] [writing-mode:vertical-rl]">
-						今日八字
+					<span class="w-fit text-sm tracking-none [writing-mode:vertical-rl]">
+						貴神{{ tify(lunarDate.getDayPositionYangGuiDesc()) }}
 					</span>
-					<div>
-						<p v-for="eightChar in lunarEightChar" class="w-fit flex leading-tight tracking-widest">
-							{{ eightChar }}
-						</p>
-					</div>
+					<span class="w-fit text-sm tracking-none [writing-mode:vertical-rl]">
+						財神{{ tify(lunarDate.getDayPositionCaiDesc()) }}
+					</span>
+					<span v-if="lunarDate.getDayNineStar().getBaMenInQiMen()"
+						class="w-fit text-sm tracking-none [writing-mode:vertical-rl]">
+						{{ tify(lunarDate.getDayNineStar().getBaMenInQiMen()) }}門{{
+							tify(lunarDate.getDayNineStar().getPositionDesc()) }}
+					</span>
 				</div>
+			</div>
+			<div class="flex flex-auto flex-col items-center justify-center">
+				<span class="text-2xl">
+					三合{{ tify(SHENG_XIAO_SAN_HE.find((sanhe) =>
+						sanhe.includes(lunarDayShengXiao))?.replace(lunarDayShengXiao, "")) }}
+				</span>
+				<span class="text-sm font-sans-serif">
+					{{ lunarDayShengXiao }}日衝{{ lunarDate.getDayChongShengXiao() }}生年{{
+						shengXiaoAge[lunarDate.getDayChongShengXiao()] }}歲
+				</span>
 			</div>
 		</div>
 	</main>
