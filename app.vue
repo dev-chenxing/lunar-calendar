@@ -160,7 +160,7 @@ onMounted(() => {
 			</div>
 			<div class="min-w-20 flex flex-auto items-center justify-center *:[writing-mode:vertical-rl]">
 				<span
-					class="bg-green text-white text-sm rounded-xl m-1 py-[.25rem] font-sans-serif w-[1.35rem] leading-tight tracking-[.1em]">
+					class="bg-green text-white text-sm rounded-xl m-1 py-[.25rem] font-sans-serif min-w-[1.35rem] leading-tight tracking-[.1em]">
 					今日胎神
 				</span>
 				<span v-for="positionTai in lunarPositionTai" class="text-xl tracking-widest w-fit">
