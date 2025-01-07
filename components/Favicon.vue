@@ -4,9 +4,8 @@
 <script setup lang="ts">
 import { useFavicon } from '@vueuse/core';
 
-const { date } = defineProps<{ date: number }>()
+const { date, color } = defineProps<{ date: number, color: string }>()
 const faviconSize = 32
-const color = "#267F00"
 
 const favicon: Ref<HTMLCanvasElement | undefined> = ref()
 const canvasContext: Ref<CanvasRenderingContext2D | undefined> = ref()
